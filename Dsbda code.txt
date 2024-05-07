@@ -1,0 +1,449 @@
+Practical 1
+import seaborn as sns
+df = sns.load_dataset('iris')
+df
+df.isnull()
+df.describe()
+df.shape
+df.ndim
+df.dtypes
+import pandas as pd
+dummies = pd.get_dummies(df.species)
+merged = pd.concat([df, dummies], axis='columns')
+merged.drop(['species'], axis='columns')
+
+
+
+
+
+
+Practical 2
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/AbhijeetChattar262/Test/main/Student.csv')
+df
+df.shape
+df.head()
+df.count
+df.info
+df.isnull()
+df.dropna()
+df.fillna(0)
+df['class'].fillna('TE')
+df['marks'].fillna(df['marks'].mean())
+df.fillna(method='pad')
+df.describe()
+
+
+
+
+
+
+
+Practical 3
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/AbhijeetChattar262/Test/main')
+df.dtypes
+df['marks'].mean()
+df['marks'].median()
+df[['marks','roll','age']].std()
+import numpy as np
+np.std(df['marks'])
+gr1 = df.groupby('class')
+te = gr1.get_group('TE')
+te.min()
+te.max()
+gr2 = df.groupby('age')
+gr2.groups
+tw = gr2.get_group(20)
+tw
+
+
+
+
+
+
+Practical 4
+import seaborn as sns
+df = sns.load_dataset('iris')
+df.describe
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, r2_score
+
+df = pd.read_csv('https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv')
+x = df.drop('medv', axis=1)
+y = df['medv']
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0, test_size=0.25)
+regressor = LinearRegression()
+regressor.fit(x_train, y_train)
+regressor.coef_
+regressor.intercept_
+y_pred = regressor.predict(x_test)
+result = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+mean_absolute_error(y_pred, y_test)
+mean_absolute_percentage_error(y_test, y_pred)
+r2_score(y_test, y_pred)
+new = [[0.7258, 0, 8.64, 0, 0, 538, 5.727, 69.6, 3.7965, 307, 22, 391.95, 11.28]]
+regressor.predict(new)
+
+
+
+
+
+
+
+
+Practical 5
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import ConfusionMatrixDisplay
+
+df = pd.read_csv('https://gist.githubusercontent.com/davewadestein/5339c464e95f5')
+x = df[['Age', 'EstimatedSalary']]
+y = df['Purchased']
+
+scaler = MinMaxScaler()
+x_scaled = scaler.fit_transform(x)
+
+x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, random_state=0, test_size=0.25)
+
+sns.countplot(x=y)
+
+classifier = LogisticRegression()
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+
+plt.xlabel('Age')
+plt.ylabel('Salary')
+plt.scatter(x_scaled[:, 0], x_scaled[:, 1], c=y)
+
+ConfusionMatrixDisplay.from_predictions(y_pred, y_test)
+
+
+
+
+
+
+
+Practical 6
+import seaborn as sns
+df = sns.load_dataset('iris')
+
+x=df.drop('species',axis=1)
+y=df['species']
+
+from sklearn.model_selection import train_test_split
+x_train ,x_test,y_train,y_test=train_test_split(x,y,random_state=0,test_size=0.2)
+
+x_train.shape
+x_test.shape
+
+from sklearn.naive_bayes import GaussianNB
+clf= GaussianNB()
+clf.fit(x_train,y_train)
+y_pred=clf.predict(x_test)
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import ConfusionMatrixDisplay
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+import matplotlib.pyplot as plt
+
+# Plot confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='g')
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.show()
+
+
+
+
+
+
+
+Practical 7
+import nltk
+nltk.download("punkt")
+nltk.download("stopwords")
+nltk.download("wordnet")
+nltk.download("averaged_perceptron_tagger")
+     
+from nltk import word_tokenize, sent_tokenize
+from nltk import pos_tag
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+
+corpus = "Sachin was the GOAT of the previous generation. Virat is the GOAT of this generation. Shubman will be the GOAT of the next generation"
+
+print(word_tokenize(corpus))
+print(sent_tokenize(corpus))
+
+tokens = word_tokenize(corpus)
+print(pos_tag(tokens))
+
+stop_words = set(stopwords.words("english"))
+
+tokens = word_tokenize(corpus)
+cleaned_tokens = []
+for token in tokens:
+  if (token not in stop_words):
+    cleaned_tokens.append(token)
+print(cleaned_tokens)
+
+stemmer = PorterStemmer()
+stemmed_tokens = []
+for token in cleaned_tokens:
+  stemmed = stemmer.stem(token)
+  stemmed_tokens.append(stemmed)
+print(stemmed_tokens)
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_tokens = []
+for token in cleaned_tokens:
+  lemmatized = lemmatizer.lemmatize(token)
+  lemmatized_tokens.append(lemmatized)
+print(lemmatized_tokens)
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+corpus = [
+    "Sachin was the GOAT of the previous generation",
+    "Virat is the GOAT of the this generation",
+    "Shubman will be the GOAT of the next generation"
+]
+
+vectorizer = TfidfVectorizer()
+matrix = vectorizer.fit(corpus)
+print(vectorizer.get_feature_names_out())
+
+
+
+
+
+
+
+Practical 8
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+
+warnings.filterwarnings("ignore")
+%matplotlib inline
+
+# Load data and basic stats
+df = pd.read_csv("train.csv")
+df.shape
+
+df.head()
+
+df.info()
+
+df.describe()
+
+df.isna().sum()
+
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+df.isna().sum()
+
+# Visualization
+df["Name"]
+
+df["Sex"].value_counts()
+
+df["Ticket"].value_counts()
+
+df["Cabin"].value_counts()
+
+df["Embarked"].value_counts()
+
+def fun1(value):
+    if (value == "male"):
+        return 1
+    else:
+        return 0
+
+def fun2(value):
+    if (value == 'S'):
+        return 0
+    elif (value == 'C'):
+        return 1
+    elif (value == 'Q'):
+        return 2
+    else:
+        return 0
+
+df["Sex"] = df["Sex"].apply(fun1)
+df["Embarked"] = df["Embarked"].apply(fun2)
+
+df.isna().sum()
+
+df = df.drop("Cabin", axis=1)
+df.shape
+
+plt.figure(figsize=(10,7))
+sns.heatmap(df.corr(), annot=True)
+plt.show()
+
+df.info()
+
+# "Survived" is the label
+sns.countplot(df["Survived"])
+plt.show()
+
+sns.countplot(df["Pclass"], hue=df["Survived"])
+plt.show()
+
+sns.countplot(df["Sex"], hue=df["Survived"], palette="Accent")
+plt.show()
+
+sns.countplot(df["Embarked"], hue=df["Survived"])
+plt.show()
+
+sns.histplot(df["Fare"])
+plt.show()
+
+
+
+
+
+
+
+
+
+Practical 9
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import warnings
+
+warnings.filterwarnings("ignore")
+%matplotlib inline
+
+# Load data and basic stats
+df = pd.read_csv("train.csv")
+df.shape
+
+df.head()
+
+df.info()
+
+df.describe()
+
+df.isna().sum()
+
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+
+df.isna().sum()
+
+# Visualization
+def fun1(value):
+    if (value == "male"):
+        return 1
+    else:
+        return 0
+
+def fun2(value):
+    if (value == 'S'):
+        return 0
+    elif (value == 'C'):
+        return 1
+    elif (value == 'Q'):
+        return 2
+    else:
+        return 0
+
+df["Sex"] = df["Sex"].apply(fun1)
+df["Embarked"] = df["Embarked"].apply(fun2)
+df = df.drop("Cabin", axis=1)
+df.shape
+
+px.box(df["Sex"], df["Age"], color=df["Survived"])
+
+plt.figure(figsize=(10,7))
+box = sns.boxplot(df["Sex"], df["Age"], hue=df["Survived"])
+plt.show()
+
+
+
+
+
+
+
+
+
+Practical 10
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+from sklearn.datasets import load_iris
+import warnings
+
+warnings.filterwarnings("ignore")
+
+# Load and preprocess data
+data = load_iris()
+df = pd.DataFrame()
+df[data['feature_names']] = data['data']
+df['label'] = data['target']
+df.head()
+
+df.shape
+
+df.info()
+
+df.describe()
+
+# Visualization
+sns.heatmap(df.corr(), annot=True)
+plt.show()
+
+sns.histplot(df["sepal length (cm)"], kde=True)
+plt.show()
+
+sns.histplot(df["sepal width (cm)"], kde=True)
+plt.show()
+
+sns.histplot(df["petal length (cm)"], kde=True)
+plt.show()
+
+sns.histplot(df["petal width (cm)"], kde=True)
+plt.show()
+
+sns.boxplot(x=df['label'], y=df["sepal length (cm)"])
+plt.show()
+
+sns.boxplot(x=df['label'] ,y=df["sepal width (cm)"])
+plt.show()
+
+sns.boxplot(x=df["label"] ,y=df["petal length (cm)"])
+plt.show()
+
+sns.boxplot(x=df['label'] ,y=df["petal width (cm)"])
+plt.show()
+
+
+
+
+
+
+
+
